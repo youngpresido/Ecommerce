@@ -60,7 +60,8 @@
 		============================================ -->
     <link rel="stylesheet" href="{{ asset('admin/css/responsive.css')}}">
     <!-- modernizr JS
-		============================================ -->
+    ============================================ -->
+    <link href="{{asset('css/sweetalert.css')}}">
     <script src="{{ asset('admin/js/vendor/modernizr-2.8.3.min.js')}}"></script>
 </head>
 
@@ -128,6 +129,8 @@
     <!-- main JS
 		============================================ -->
     <script src="{{ asset('admin/js/main.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js" integrity="sha256-KsRuvuRtUVvobe66OFtOQfjP8WA2SzYsmm4VPfMnxms=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8.14.0/dist/sweetalert2.all.min.js"></script>
 </body>
 
 </html>

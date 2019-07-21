@@ -6,12 +6,13 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Category;
 use Session;
+use Alert;
 class CategoryController extends Controller
 {
     public function index()
     {
-        $category=Category::all();
-        return view('admin.category');
+        $category=Category::paginate(10);
+        return view('admin.category',compact('category'));
     }
     public function create()
     {
@@ -21,7 +22,7 @@ class CategoryController extends Controller
     {
         $this->validate($request,[
             "name"=>"required|string",
-            "decription"=>"required"
+            "description"=>"required"
         ]);
 
 
@@ -32,8 +33,10 @@ class CategoryController extends Controller
         if($category->save())
         {
             Session::flash("msg","Successfully Saved");
+            Alert::success("Successfully Saved");
             return redirect()->back();
         }else{
+            Alert::error("Opps an error occurred");
             Session::flash("error","Opps an error occurred");
             return redirect()->back();
         }
@@ -51,8 +54,10 @@ class CategoryController extends Controller
         if($category->save())
         {
             Session::flash("msg","Successfully edited");
+            Alert::success("Successfully edited");
             return redirect()->back();
         }else{
+            Alert::error("Opps an error occurred");
             Session::flash("error","Opps an error occurred");
             return redirect()->back();
         }
@@ -68,9 +73,11 @@ class CategoryController extends Controller
         $category=Category::whereId($id)->first();
         if($category->delete())
         {
+            Alert::success('Successfully deleted');
             Session::flash("msg","Successfully deleted");
             return redirect()->back();
         }else{
+            Alert::error("Opps an error occurred");
             Session::flash("error","Opps an error occurred");
             return redirect()->back();
         }

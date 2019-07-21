@@ -5,37 +5,73 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Product;
+use App\Category;
+use Cloudder;
+use Session;
+use Alert;
+use App\Images;
 class ProductController extends Controller
 {
     public function index()
     {
-        $products=Product::all();
-        return view('admin.products');
+        $products=Product::paginate(10);
+        return view('admin.products',compact('products'));
     }
     public function create()
     {
-        return view('admin.product-add');
+        $category=Category::all();
+        return view('admin.product-add',compact('category'));
     }
     public function store(Request $request)
     {
+        // dd($request->all());
         $this->validate($request,[
-            "name"=>"required|string",
-            "decription"=>"required"
+            "title"=>"required|string",
+            "description"=>"required",
+            'price'=>'required',
+            'quantity'=>'required',
+            'category_id'=>'required',
+            'pictures.*'=>'required|mimes:jpg,jpeg,png'
+        ],[
+            'required.category_id'=>'No category is chosen'
         ]);
 
-
-
-        $Product=new Product;
-        $Product->name=$request->name;
-        $Product->description=$request->description;
-        if($Product->save())
-        {
-            Session::flash("msg","Successfully Saved");
-            return redirect()->back();
-        }else{
-            Session::flash("error","Opps an error occurred");
-            return redirect()->back();
+// dd($request->file('pictures'));
+            
+        $product=new Product;
+        $product->title=$request->title;
+        $product->description=$request->description;
+        $product->price=$request->price;
+        $product->quantity=$request->quantity;
+        $product->category_id=$request->category_id;
+        // dd($request->hasFile('pictures'));
+        $product->save();
+        if($request->hasFile('pictures')){
+            // dd($request->file('pictures'));
+            foreach($request->file('pictures') as $pic){
+                // dd($pic);
+                $image_n=$pic->getClientOriginalName();
+                $image_name=$pic->getRealPath();
+                Cloudder::upload($image_name,null);
+                list($width,$height)=getimagesize($image_name);
+                $image_url=Cloudder::show(Cloudder::getPublicId(),['width'=>$width,"height"=>$height]);
+                $pic->move(public_path("uploads"),$image_n);
+                $ima=new Images;
+              
+                $ima->name=$image_n;
+                $ima->image_url=$image_url;
+                $ima->product_id=$product->id;
+                $ima->save();
+                // dd($ima->save());
+                
+            }
         }
+        
+            Session::flash("msg","Successfully Saved");
+            Alert::success("Successfully Saved");
+            return redirect()->back();
+       
+        
     }
     public function show($id)
     {

@@ -35,7 +35,13 @@
             <div class="single-pro-review-area">
                 <div class="container-fluid">
                     <div class="row">
-                        <form method="post">
+                        @if($errors->all())
+                        @foreach($errors->all() as $error)
+
+                        <div>{{$error}}</div>
+                        @endforeach
+                        @endif
+                        <form method="post" enctype="multipart/form-data">
                             @csrf
                         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                             <div class="review-tab-pro-inner">
@@ -55,7 +61,7 @@
                                                     </div> -->
                                                     <div class="input-group mg-b-pro-edt">
                                                         <span class="input-group-addon"><i class="icon nalika-edit" aria-hidden="true"></i></span>
-                                                        <input type="text" class="form-control" placeholder="Product Title">
+                                                        <input name="title" type="text" value="{{old('title')}}" class="form-control @error('title') is-invalid @enderror" placeholder="Product Title">
                                                     </div>
                                                     <!-- <div class="input-group mg-b-pro-edt">
                                                         <span class="input-group-addon"><i class="fa fa-usd" aria-hidden="true"></i></span>
@@ -64,11 +70,11 @@
                                                    
                                                     <div class="input-group mg-b-pro-edt">
                                                         <span class="input-group-addon"><i class="fa fa-usd" aria-hidden="true"></i></span>
-                                                        <input type="text" class="form-control" placeholder="Sale Price">
+                                                        <input name="price" type="text" value="{{old('price')}}" class="form-control @error('price') is-invalid @enderror" placeholder="Sale Price">
                                                     </div>
                                                     <div class="input-group mg-b-pro-edt">
                                                         <span class="input-group-addon"><i class="icon nalika-favorites" aria-hidden="true"></i></span>
-                                                        <input type="text" class="form-control" placeholder="Quantity">
+                                                        <input type="text" name="quantity" value="{{old('quantity')}}" class="form-control @error('quantity') is-invalid @enderror" placeholder="Quantity">
                                                     </div>
                                                 </div>
                                             </div>
@@ -80,23 +86,23 @@
                                                     </div> -->
                                                     <div class="input-group mg-b-pro-edt">
                                                         <span class="input-group-addon"><i class="icon nalika-favorites-button" aria-hidden="true"></i></span>
-                                                        <textarea  class="form-control" placeholder="Product Description"></textarea>
+                                                        <textarea name="description" class="form-control" placeholder="Product Description"></textarea>
                                                     </div>
                                                     <div class="input-group mg-b-pro-edt">
                                                         <span class="input-group-addon">Upload picture<i class="icon nalika-new-file" aria-hidden="true"></i></span>
-                                                        <input type="file" class="form-control" placeholder="">
+                                                        <input type="file" name="pictures[]"  multiple class="form-control" placeholder="">
                                                     </div>
                                                     <!-- <div class="input-group mg-b-pro-edt">
                                                         <span class="input-group-addon"><i class="icon nalika-like" aria-hidden="true"></i></span>
                                                         <input type="text" class="form-control" placeholder="Category">
                                                     </div> -->
-                                                    <select name="select" class="form-control pro-edt-select form-control-primary">
-															<option disabled>Select a category</option>
-															<option value="opt2">2</option>
-															<option value="opt3">3</option>
-															<option value="opt4">4</option>
-															<option value="opt5">5</option>
-															<option value="opt6">6</option>
+                                                    <select name="category_id" class="form-control pro-edt-select form-control-primary">
+                                                            <option disabled>Select a category</option>
+                                                            @if($category)
+                                                            @foreach($category as $cat)
+                                                            <option value="{{$cat->id}}">{{$cat->name}}</option>
+                                                            @endforeach
+                                                            @endif
 														</select>
                                                 </div>
                                             </div>
